@@ -31,19 +31,19 @@ export default function App() {
 
   return (
     <div className="h-full flex flex-col">
-      <header className="flex items-center justify-between px-4 py-2 bg-white border-b border-gray-100 sticky top-0 z-40">
-        <h1 className="text-lg font-bold" style={{ color: 'var(--color-primary)' }}>
+      <header className="flex items-center justify-between px-5 py-3 bg-white/95 backdrop-blur-sm border-b border-gray-200/60 sticky top-0 z-40 shadow-sm">
+        <h1 className="text-xl font-extrabold tracking-tight" style={{ color: 'var(--color-primary)' }}>
           🎭 カオハJAPAN
         </h1>
         <button
           onClick={toggleLang}
-          className="text-xs px-3 py-1 rounded-full border border-gray-300 hover:bg-gray-50 transition"
+          className="text-xs font-bold px-4 py-1.5 rounded-full border-2 border-gray-300 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors bg-white"
         >
           {i18n.language === 'ja' ? 'EN' : 'JA'}
         </button>
       </header>
 
-      <main className="flex-1 overflow-auto pb-16">
+      <main className="flex-1 overflow-auto pb-safe">
         <Routes>
           <Route path="/" element={<MapPage visits={visits} addVisit={addVisit} />} />
           <Route path="/points" element={<PointsPage visits={visits} />} />

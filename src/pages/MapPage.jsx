@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { MapContainer, TileLayer, Marker, Popup, useMap, Circle } from 'react-leaflet'
 import L from 'leaflet'
@@ -14,23 +14,23 @@ L.Icon.Default.mergeOptions({
 
 const visitedIcon = new L.DivIcon({
   className: '',
-  html: '<div style="font-size:28px;text-align:center;line-height:1">🟢</div>',
-  iconSize: [32, 32],
-  iconAnchor: [16, 16],
+  html: '<div style="font-size:30px;text-align:center;line-height:1;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3))">✅</div>',
+  iconSize: [36, 36],
+  iconAnchor: [18, 18],
 })
 
 const unvisitedIcon = new L.DivIcon({
   className: '',
-  html: '<div style="font-size:28px;text-align:center;line-height:1">🎭</div>',
-  iconSize: [32, 32],
-  iconAnchor: [16, 16],
+  html: '<div style="font-size:30px;text-align:center;line-height:1;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3))">🎭</div>',
+  iconSize: [36, 36],
+  iconAnchor: [18, 18],
 })
 
 const myLocationIcon = new L.DivIcon({
   className: '',
-  html: '<div style="font-size:24px;text-align:center;line-height:1">📍</div>',
-  iconSize: [28, 28],
-  iconAnchor: [14, 14],
+  html: '<div style="width:18px;height:18px;background:#3b82f6;border:3px solid white;border-radius:50%;box-shadow:0 0 0 2px #3b82f6,0 2px 8px rgba(0,0,0,0.3)"></div>',
+  iconSize: [18, 18],
+  iconAnchor: [9, 9],
 })
 
 function FlyToLocation({ position }) {
@@ -59,10 +59,6 @@ export default function MapPage({ visits, addVisit }) {
 
   const isVisited = (panelId) => visits.some((v) => v.panelId === panelId)
 
-  const handleLocate = () => {
-    getCurrentPosition()
-  }
-
   useEffect(() => {
     if (position) setFlyTarget(position)
   }, [position])
@@ -72,17 +68,27 @@ export default function MapPage({ visits, addVisit }) {
 
   return (
     <div className="h-full flex flex-col relative">
-      {/* Stats bar */}
-      <div className="flex items-center justify-between px-4 py-2 bg-white/90 backdrop-blur text-sm border-b border-gray-100">
-        <span>
-          🎭 {totalCount}{t('map.panels')} | ✅ {visitedCount}{t('map.visited')}
-        </span>
+      {/* Floating stats */}
+      <div className="absolute top-3 left-3 right-3 z-10 flex items-center justify-between gap-2">
+        <div className="flex gap-2">
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl px-3 py-2 shadow-lg border border-white/50">
+            <span className="text-xs font-bold text-gray-600">🎭 {totalCount}</span>
+          </div>
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl px-3 py-2 shadow-lg border border-white/50">
+            <span className="text-xs font-bold text-green-600">✅ {visitedCount}</span>
+          </div>
+        </div>
         <button
-          onClick={handleLocate}
+          onClick={() => getCurrentPosition()}
           disabled={loading}
-          className="flex items-center gap-1 px-3 py-1 bg-blue-500 text-white rounded-full text-xs font-medium hover:bg-blue-600 transition disabled:opacity-50"
+          className="flex items-center gap-1.5 px-4 py-2 bg-white/95 backdrop-blur-sm text-gray-700 rounded-xl text-xs font-bold shadow-lg border border-white/50 hover:bg-white transition disabled:opacity-50 active:scale-95"
         >
-          {loading ? '...' : '📍'} {t('map.myLocation')}
+          {loading ? (
+            <span className="animate-spin">⏳</span>
+          ) : (
+            <span style={{ color: '#3b82f6' }}>●</span>
+          )}
+          {t('map.myLocation')}
         </button>
       </div>
 
@@ -109,7 +115,7 @@ export default function MapPage({ visits, addVisit }) {
               <Circle
                 center={[position.lat, position.lng]}
                 radius={500}
-                pathOptions={{ color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.1 }}
+                pathOptions={{ color: '#3b82f6', fillColor: '#93c5fd', fillOpacity: 0.15, weight: 2 }}
               />
             </>
           )}
@@ -123,29 +129,32 @@ export default function MapPage({ visits, addVisit }) {
                 icon={visited ? visitedIcon : unvisitedIcon}
               >
                 <Popup>
-                  <div className="min-w-[180px]">
-                    <h3 className="font-bold text-sm mb-1">
+                  <div className="min-w-[200px]">
+                    <h3 className="font-extrabold text-base mb-1 leading-tight">
                       {isJa ? panel.name : panel.nameEn}
                     </h3>
-                    <p className="text-xs text-gray-500 mb-1">
-                      📍 {isJa ? panel.prefecture : panel.prefectureEn}
+                    <p className="text-xs text-gray-500 mb-2 flex items-center gap-1">
+                      <span>📍</span> {isJa ? panel.prefecture : panel.prefectureEn}
                     </p>
-                    <p className="text-xs text-gray-600 mb-2">
+                    <p className="text-sm text-gray-600 mb-3 leading-relaxed">
                       {isJa ? panel.description : panel.descriptionEn}
                     </p>
-                    <p className="text-xs font-medium mb-2">
-                      🎯 {panel.points}{t('common.points')}
-                    </p>
-                    {visited ? (
-                      <span className="inline-block text-xs px-3 py-1 bg-green-100 text-green-700 rounded-full font-medium">
-                        {t('map.alreadyVisited')}
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-sm font-bold" style={{ color: 'var(--color-accent)' }}>
+                        🎯 +{panel.points} pt
                       </span>
+                    </div>
+                    {visited ? (
+                      <div className="text-center text-sm px-4 py-2.5 bg-green-50 text-green-600 rounded-xl font-bold border border-green-200">
+                        ✅ {t('map.alreadyVisited')}
+                      </div>
                     ) : (
                       <button
                         onClick={() => addVisit(panel.id)}
-                        className="w-full text-xs px-3 py-2 bg-[var(--color-primary)] text-white rounded-lg font-bold hover:bg-[var(--color-primary-dark)] transition"
+                        className="w-full text-sm px-4 py-2.5 text-white rounded-xl font-bold transition-all hover:opacity-90 active:scale-[0.97] shadow-md"
+                        style={{ background: 'linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))' }}
                       >
-                        {t('map.visit')}
+                        🎭 {t('map.visit')}
                       </button>
                     )}
                   </div>
