@@ -1,0 +1,52 @@
+{
+  "app": {
+    "title": "カオハJAPAN"
+  },
+  "nav": {
+    "map": "マップ",
+    "points": "ポイント",
+    "contest": "コンテスト"
+  },
+  "map": {
+    "title": "顔ハメマップ",
+    "myLocation": "現在地",
+    "visited": "訪問済み",
+    "notVisited": "未訪問",
+    "visit": "訪問する！",
+    "alreadyVisited": "訪問済み ✓",
+    "nearYou": "近くのパネル",
+    "panels": "件のパネル"
+  },
+  "points": {
+    "title": "ご当地ポイント",
+    "rank": "ランク",
+    "totalPoints": "合計ポイント",
+    "visited": "訪問済み",
+    "progress": "制覇率",
+    "visitHistory": "訪問履歴",
+    "noVisits": "まだパネルを訪問していません。マップから訪問しましょう！",
+    "ranks": {
+      "beginner": "初心者",
+      "traveler": "旅人",
+      "master": "マスター",
+      "legend": "伝説"
+    },
+    "prefectures": "都道府県"
+  },
+  "contest": {
+    "title": "フォトコンテスト",
+    "upload": "写真をアップロード",
+    "share": "シェア",
+    "gallery": "ギャラリー",
+    "noPhotos": "まだ写真がありません。顔ハメ写真をアップロードしよう！",
+    "shareTwitter": "Xでシェア",
+    "shareLine": "LINEでシェア",
+    "delete": "削除",
+    "uploadHint": "顔ハメパネルで撮った写真を選んでね"
+  },
+  "common": {
+    "points": "pt",
+    "of": "／",
+    "lang": "English"
+  }
+}

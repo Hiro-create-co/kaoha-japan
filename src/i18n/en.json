@@ -1,0 +1,52 @@
+{
+  "app": {
+    "title": "KaoHa JAPAN"
+  },
+  "nav": {
+    "map": "Map",
+    "points": "Points",
+    "contest": "Contest"
+  },
+  "map": {
+    "title": "Face Cutout Map",
+    "myLocation": "My Location",
+    "visited": "Visited",
+    "notVisited": "Not Visited",
+    "visit": "Check In!",
+    "alreadyVisited": "Visited ✓",
+    "nearYou": "Nearby Panels",
+    "panels": "panels"
+  },
+  "points": {
+    "title": "Local Points",
+    "rank": "Rank",
+    "totalPoints": "Total Points",
+    "visited": "Visited",
+    "progress": "Progress",
+    "visitHistory": "Visit History",
+    "noVisits": "No panels visited yet. Go explore the map!",
+    "ranks": {
+      "beginner": "Beginner",
+      "traveler": "Traveler",
+      "master": "Master",
+      "legend": "Legend"
+    },
+    "prefectures": "Prefectures"
+  },
+  "contest": {
+    "title": "Photo Contest",
+    "upload": "Upload Photo",
+    "share": "Share",
+    "gallery": "Gallery",
+    "noPhotos": "No photos yet. Upload your face cutout photos!",
+    "shareTwitter": "Share on X",
+    "shareLine": "Share on LINE",
+    "delete": "Delete",
+    "uploadHint": "Select a photo taken at a face cutout panel"
+  },
+  "common": {
+    "points": "pt",
+    "of": "/",
+    "lang": "日本語"
+  }
+}
