@@ -13,9 +13,12 @@
     "visited": "訪問済み",
     "notVisited": "未訪問",
     "visit": "訪問する！",
-    "alreadyVisited": "訪問済み ✓",
+    "alreadyVisited": "訪問済み",
     "nearYou": "近くのパネル",
-    "panels": "件のパネル"
+    "panels": "件のパネル",
+    "addPanel": "パネルを発見！",
+    "userSubmitted": "ユーザー投稿",
+    "unverified": "未確認"
   },
   "points": {
     "title": "ご当地ポイント",
@@ -43,6 +46,22 @@
     "shareLine": "LINEでシェア",
     "delete": "削除",
     "uploadHint": "顔ハメパネルで撮った写真を選んでね"
+  },
+  "addPanel": {
+    "title": "新しいパネルを登録",
+    "photo": "顔ハメパネルの写真",
+    "tapToPhoto": "タップして撮影・選択",
+    "name": "パネルの名前",
+    "namePlaceholder": "例: ○○城 顔ハメ",
+    "prefecture": "都道府県",
+    "selectPrefecture": "選択してください",
+    "location": "場所（位置情報）",
+    "useCurrentLocation": "現在地を使う",
+    "lat": "緯度",
+    "lng": "経度",
+    "description": "説明（任意）",
+    "descriptionPlaceholder": "どんな場所にあるか教えてね",
+    "submit": "このパネルを登録する"
   },
   "common": {
     "points": "pt",

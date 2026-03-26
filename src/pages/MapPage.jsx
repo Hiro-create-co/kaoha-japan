@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { MapContainer, TileLayer, Marker, Popup, useMap, Circle } from 'react-leaflet'
 import L from 'leaflet'
 import { useGeolocation } from '../hooks/useGeolocation'
+import AddPanelModal from '../components/AddPanelModal'
 
 // Fix default marker icons
 delete L.Icon.Default.prototype._getIconUrl
@@ -26,6 +27,20 @@ const unvisitedIcon = new L.DivIcon({
   iconAnchor: [18, 18],
 })
 
+const userPanelIcon = new L.DivIcon({
+  className: '',
+  html: '<div style="font-size:30px;text-align:center;line-height:1;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3))">📌</div>',
+  iconSize: [36, 36],
+  iconAnchor: [18, 18],
+})
+
+const userVisitedIcon = new L.DivIcon({
+  className: '',
+  html: '<div style="font-size:30px;text-align:center;line-height:1;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3))">🏅</div>',
+  iconSize: [36, 36],
+  iconAnchor: [18, 18],
+})
+
 const myLocationIcon = new L.DivIcon({
   className: '',
   html: '<div style="width:18px;height:18px;background:#3b82f6;border:3px solid white;border-radius:50%;box-shadow:0 0 0 2px #3b82f6,0 2px 8px rgba(0,0,0,0.3)"></div>',
@@ -43,19 +58,23 @@ function FlyToLocation({ position }) {
   return null
 }
 
-export default function MapPage({ visits, addVisit }) {
+export default function MapPage({ visits, addVisit, userPanels, addUserPanel }) {
   const { t, i18n } = useTranslation()
-  const [panels, setPanels] = useState([])
+  const [masterPanels, setMasterPanels] = useState([])
   const { position, loading, getCurrentPosition } = useGeolocation()
   const [flyTarget, setFlyTarget] = useState(null)
+  const [showAddModal, setShowAddModal] = useState(false)
   const isJa = i18n.language === 'ja'
 
   useEffect(() => {
     fetch('/data/panels.json')
       .then((r) => r.json())
-      .then(setPanels)
+      .then((data) => setMasterPanels(data.map((p) => ({ ...p, source: 'master' }))))
       .catch(console.error)
   }, [])
+
+  // Merge master + user panels
+  const allPanels = [...masterPanels, ...userPanels]
 
   const isVisited = (panelId) => visits.some((v) => v.panelId === panelId)
 
@@ -64,7 +83,14 @@ export default function MapPage({ visits, addVisit }) {
   }, [position])
 
   const visitedCount = visits.length
-  const totalCount = panels.length
+  const totalCount = allPanels.length
+
+  const getIcon = (panel, visited) => {
+    if (panel.source === 'user') {
+      return visited ? userVisitedIcon : userPanelIcon
+    }
+    return visited ? visitedIcon : unvisitedIcon
+  }
 
   return (
     <div className="h-full flex flex-col relative">
@@ -91,6 +117,15 @@ export default function MapPage({ visits, addVisit }) {
           {t('map.myLocation')}
         </button>
       </div>
+
+      {/* Floating add button */}
+      <button
+        onClick={() => setShowAddModal(true)}
+        className="absolute bottom-5 right-4 z-10 flex items-center gap-2 px-5 py-3 text-white rounded-2xl font-bold text-sm shadow-xl transition-all hover:opacity-90 active:scale-95"
+        style={{ background: 'linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))' }}
+      >
+        📌 {t('map.addPanel')}
+      </button>
 
       {/* Map */}
       <div className="flex-1">
@@ -120,30 +155,58 @@ export default function MapPage({ visits, addVisit }) {
             </>
           )}
 
-          {panels.map((panel) => {
+          {allPanels.map((panel) => {
             const visited = isVisited(panel.id)
+            const isUser = panel.source === 'user'
             return (
               <Marker
                 key={panel.id}
                 position={[panel.lat, panel.lng]}
-                icon={visited ? visitedIcon : unvisitedIcon}
+                icon={getIcon(panel, visited)}
               >
                 <Popup>
-                  <div className="min-w-[200px]">
+                  <div className="min-w-[220px]">
+                    {/* Image if available */}
+                    {panel.image && (
+                      <img
+                        src={panel.image}
+                        alt={panel.name}
+                        className="w-full h-32 object-cover rounded-xl mb-3 border border-gray-200"
+                      />
+                    )}
+
                     <h3 className="font-extrabold text-base mb-1 leading-tight">
-                      {isJa ? panel.name : panel.nameEn}
+                      {isJa ? panel.name : (panel.nameEn || panel.name)}
                     </h3>
-                    <p className="text-xs text-gray-500 mb-2 flex items-center gap-1">
-                      <span>📍</span> {isJa ? panel.prefecture : panel.prefectureEn}
-                    </p>
-                    <p className="text-sm text-gray-600 mb-3 leading-relaxed">
-                      {isJa ? panel.description : panel.descriptionEn}
-                    </p>
+
+                    {/* Source badge */}
+                    <div className="flex items-center gap-1.5 mb-2">
+                      <span className="text-xs text-gray-500 flex items-center gap-1">
+                        📍 {isJa ? panel.prefecture : (panel.prefectureEn || panel.prefecture)}
+                      </span>
+                      {isUser ? (
+                        <span className="text-[10px] px-1.5 py-0.5 bg-purple-100 text-purple-600 rounded-full font-bold">
+                          {t('map.userSubmitted')}
+                        </span>
+                      ) : (
+                        <span className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-400 rounded-full font-bold">
+                          {t('map.unverified')}
+                        </span>
+                      )}
+                    </div>
+
+                    {panel.description && (
+                      <p className="text-sm text-gray-600 mb-3 leading-relaxed">
+                        {isJa ? panel.description : (panel.descriptionEn || panel.description)}
+                      </p>
+                    )}
+
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-sm font-bold" style={{ color: 'var(--color-accent)' }}>
                         🎯 +{panel.points} pt
                       </span>
                     </div>
+
                     {visited ? (
                       <div className="text-center text-sm px-4 py-2.5 bg-green-50 text-green-600 rounded-xl font-bold border border-green-200">
                         ✅ {t('map.alreadyVisited')}
@@ -164,6 +227,13 @@ export default function MapPage({ visits, addVisit }) {
           })}
         </MapContainer>
       </div>
+
+      {/* Add Panel Modal */}
+      <AddPanelModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onSubmit={addUserPanel}
+      />
     </div>
   )
 }

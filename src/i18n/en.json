@@ -13,9 +13,12 @@
     "visited": "Visited",
     "notVisited": "Not Visited",
     "visit": "Check In!",
-    "alreadyVisited": "Visited ✓",
+    "alreadyVisited": "Visited",
     "nearYou": "Nearby Panels",
-    "panels": "panels"
+    "panels": "panels",
+    "addPanel": "Found a Panel!",
+    "userSubmitted": "User Submitted",
+    "unverified": "Unverified"
   },
   "points": {
     "title": "Local Points",
@@ -43,6 +46,22 @@
     "shareLine": "Share on LINE",
     "delete": "Delete",
     "uploadHint": "Select a photo taken at a face cutout panel"
+  },
+  "addPanel": {
+    "title": "Register New Panel",
+    "photo": "Photo of the Panel",
+    "tapToPhoto": "Tap to take or select a photo",
+    "name": "Panel Name",
+    "namePlaceholder": "e.g. Castle Face Cutout",
+    "prefecture": "Prefecture",
+    "selectPrefecture": "Select prefecture",
+    "location": "Location",
+    "useCurrentLocation": "Use current location",
+    "lat": "Latitude",
+    "lng": "Longitude",
+    "description": "Description (optional)",
+    "descriptionPlaceholder": "Tell us about this spot",
+    "submit": "Register this Panel"
   },
   "common": {
     "points": "pt",

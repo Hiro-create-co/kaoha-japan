@@ -2,17 +2,19 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { getRank, getNextRank, getProgress, RANKS, POINTS_PER_VISIT } from '../utils/ranks'
 
-export default function PointsPage({ visits }) {
+export default function PointsPage({ visits, userPanels = [] }) {
   const { t, i18n } = useTranslation()
-  const [panels, setPanels] = useState([])
+  const [masterPanels, setMasterPanels] = useState([])
   const isJa = i18n.language === 'ja'
 
   useEffect(() => {
     fetch('/data/panels.json')
       .then((r) => r.json())
-      .then(setPanels)
+      .then(setMasterPanels)
       .catch(console.error)
   }, [])
+
+  const panels = [...masterPanels, ...userPanels]
 
   const visitCount = visits.length
   const totalPoints = visitCount * POINTS_PER_VISIT

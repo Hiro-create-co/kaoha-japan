@@ -10,6 +10,7 @@ export default function App() {
   const { i18n } = useTranslation()
   const [visits, setVisits] = useLocalStorage('kaoha-visits', [])
   const [photos, setPhotos] = useLocalStorage('kaoha-photos', [])
+  const [userPanels, setUserPanels] = useLocalStorage('kaoha-user-panels', [])
 
   const toggleLang = () => {
     const newLang = i18n.language === 'ja' ? 'en' : 'ja'
@@ -29,6 +30,16 @@ export default function App() {
     setPhotos((prev) => prev.filter((p) => p.id !== id))
   }
 
+  const addUserPanel = (panel) => {
+    setUserPanels((prev) => [...prev, {
+      ...panel,
+      id: `user-${Date.now()}`,
+      points: 10,
+      source: 'user',
+      createdAt: new Date().toISOString(),
+    }])
+  }
+
   return (
     <div className="h-full flex flex-col">
       <header className="flex items-center justify-between px-5 py-3 bg-white/95 backdrop-blur-sm border-b border-gray-200/60 sticky top-0 z-40 shadow-sm">
@@ -45,8 +56,8 @@ export default function App() {
 
       <main className="flex-1 overflow-auto pb-safe">
         <Routes>
-          <Route path="/" element={<MapPage visits={visits} addVisit={addVisit} />} />
-          <Route path="/points" element={<PointsPage visits={visits} />} />
+          <Route path="/" element={<MapPage visits={visits} addVisit={addVisit} userPanels={userPanels} addUserPanel={addUserPanel} />} />
+          <Route path="/points" element={<PointsPage visits={visits} userPanels={userPanels} />} />
           <Route path="/contest" element={<ContestPage photos={photos} addPhoto={addPhoto} deletePhoto={deletePhoto} />} />
         </Routes>
       </main>
