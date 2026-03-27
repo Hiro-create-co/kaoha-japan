@@ -8,11 +8,22 @@ import ContestPage from './pages/ContestPage'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import ReloadPrompt from './components/ReloadPrompt'
 
+// Migrate old localStorage keys (kaoha- → kaohame-)
+if (!localStorage.getItem('kaohame-migrated')) {
+  for (const key of ['visits', 'photos', 'user-panels']) {
+    const old = localStorage.getItem(`kaoha-${key}`)
+    if (old && !localStorage.getItem(`kaohame-${key}`)) {
+      localStorage.setItem(`kaohame-${key}`, old)
+    }
+  }
+  localStorage.setItem('kaohame-migrated', '1')
+}
+
 export default function App() {
   const { i18n } = useTranslation()
-  const [visits, setVisits] = useLocalStorage('kaoha-visits', [])
-  const [photos, setPhotos] = useLocalStorage('kaoha-photos', [])
-  const [userPanels, setUserPanels] = useLocalStorage('kaoha-user-panels', [])
+  const [visits, setVisits] = useLocalStorage('kaohame-visits', [])
+  const [photos, setPhotos] = useLocalStorage('kaohame-photos', [])
+  const [userPanels, setUserPanels] = useLocalStorage('kaohame-user-panels', [])
 
   const toggleLang = () => {
     const newLang = i18n.language === 'ja' ? 'en' : 'ja'
@@ -46,7 +57,7 @@ export default function App() {
     <div className="h-full flex flex-col bg-[var(--color-bg)]">
       <header className="flex items-center justify-between px-5 py-3 bg-white/80 backdrop-blur-xl border-b border-[var(--color-border)] sticky top-0 z-40">
         <h1 className="text-[15px] font-bold tracking-tight text-[var(--color-text)]">
-          カオハJAPAN
+          カオハメJAPAN
         </h1>
         <button
           onClick={toggleLang}

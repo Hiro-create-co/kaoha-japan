@@ -18,12 +18,12 @@ export default function ContestPage({ photos, addPhoto, deletePhoto }) {
   }
 
   const shareOnTwitter = () => {
-    const text = encodeURIComponent('カオハJAPANで顔ハメパネル巡り中！ #カオハJAPAN #顔ハメ')
+    const text = encodeURIComponent('カオハメJAPANで顔ハメパネル巡り中！ #カオハメJAPAN #顔ハメ')
     window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank')
   }
 
   const shareOnLine = () => {
-    const text = encodeURIComponent('カオハJAPANで顔ハメパネル巡り中！')
+    const text = encodeURIComponent('カオハメJAPANで顔ハメパネル巡り中！')
     window.open(`https://social-plugins.line.me/lineit/share?text=${text}`, '_blank')
   }
 
