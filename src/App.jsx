@@ -6,6 +6,7 @@ import MapPage from './pages/MapPage'
 import PointsPage from './pages/PointsPage'
 import ContestPage from './pages/ContestPage'
 import { useLocalStorage } from './hooks/useLocalStorage'
+import ReloadPrompt from './components/ReloadPrompt'
 
 export default function App() {
   const { i18n } = useTranslation()
@@ -65,6 +66,7 @@ export default function App() {
       </main>
 
       <BottomNav />
+      <ReloadPrompt />
     </div>
   )
 }
