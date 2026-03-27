@@ -6,9 +6,9 @@ export default function BottomNav() {
   const location = useLocation()
 
   const navItems = [
-    { to: '/', icon: '🗾', label: t('nav.map') },
-    { to: '/points', icon: '⭐', label: t('nav.points') },
-    { to: '/contest', icon: '📸', label: t('nav.contest') },
+    { to: '/', icon: '🗺️', activeIcon: '🗺️', label: t('nav.map'), color: '#4ECDC4' },
+    { to: '/points', icon: '⭐', activeIcon: '🌟', label: t('nav.points'), color: '#FFD93D' },
+    { to: '/contest', icon: '📷', activeIcon: '📸', label: t('nav.contest'), color: '#FF6B6B' },
   ]
 
   const isActive = (to) => {
@@ -17,23 +17,26 @@ export default function BottomNav() {
   }
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-gray-200 z-50 shadow-[0_-2px_10px_rgba(0,0,0,0.06)]">
-      <div className="flex justify-around items-center h-[64px] max-w-lg mx-auto px-4"
+    <nav className="fixed bottom-0 left-0 right-0 z-50" style={{ background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(20px)', borderTop: '1px solid #ffe8e0', boxShadow: '0 -4px 20px rgba(255,107,107,0.08)' }}>
+      <div className="flex justify-around items-center h-[68px] max-w-lg mx-auto px-4"
            style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
-        {navItems.map(({ to, icon, label }) => {
+        {navItems.map(({ to, icon, activeIcon, label, color }) => {
           const active = isActive(to)
           return (
             <NavLink
               key={to}
               to={to}
-              className={`flex flex-col items-center justify-center gap-0.5 w-20 py-2 rounded-2xl transition-all duration-200 ${
-                active
-                  ? 'text-[var(--color-primary)] bg-red-50 scale-105'
-                  : 'text-gray-400 hover:text-gray-600 active:scale-95'
+              className={`flex flex-col items-center justify-center gap-0.5 px-4 py-1.5 rounded-2xl transition-all duration-300 ${
+                active ? 'scale-110' : 'opacity-50 hover:opacity-75 active:scale-95'
               }`}
+              style={active ? { background: `${color}15` } : {}}
             >
-              <span className="text-xl leading-none">{icon}</span>
-              <span className="text-[10px] font-bold">{label}</span>
+              <span className={`text-xl leading-none ${active ? 'animate-bounce-soft' : ''}`}>
+                {active ? activeIcon : icon}
+              </span>
+              <span className="text-[10px] font-bold" style={active ? { color } : { color: '#9a8585' }}>
+                {label}
+              </span>
             </NavLink>
           )
         })}

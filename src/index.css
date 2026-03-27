@@ -1,14 +1,21 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&family=Nunito:wght@400;600;700;800;900&display=swap');
 
 :root {
-  --color-primary: #e74c3c;
-  --color-primary-dark: #c0392b;
-  --color-accent: #f39c12;
-  --color-success: #27ae60;
-  --color-bg: #f5f0e8;
+  --color-primary: #FF6B6B;
+  --color-primary-dark: #ee5a5a;
+  --color-primary-light: #ff9a9a;
+  --color-secondary: #FFD93D;
+  --color-secondary-dark: #f0c830;
+  --color-accent: #6BCB77;
+  --color-accent-dark: #5ab868;
+  --color-teal: #4ECDC4;
+  --color-purple: #a78bfa;
+  --color-bg: #FFF8F0;
+  --color-bg-warm: #FFF0E0;
   --color-card: #ffffff;
-  --color-text: #2c3e50;
-  --color-text-light: #7f8c8d;
+  --color-text: #3d2c2c;
+  --color-text-light: #9a8585;
 }
 
 * {
@@ -20,7 +27,7 @@
 html, body, #root {
   height: 100%;
   width: 100%;
-  font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+  font-family: 'Zen Maru Gothic', 'Nunito', 'Hiragino Sans', sans-serif;
   background-color: var(--color-bg);
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
@@ -34,19 +41,20 @@ html, body, #root {
 }
 
 .leaflet-popup-content-wrapper {
-  border-radius: 16px !important;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.12) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 10px 40px rgba(255, 107, 107, 0.15), 0 4px 12px rgba(0,0,0,0.08) !important;
   padding: 0 !important;
+  border: 2px solid #fff0e0 !important;
 }
 
 .leaflet-popup-content {
-  margin: 14px 16px !important;
+  margin: 16px 18px !important;
   font-family: inherit !important;
-  line-height: 1.5 !important;
+  line-height: 1.6 !important;
 }
 
 .leaflet-popup-tip {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.1) !important;
 }
 
 /* Marker cluster animation */
@@ -57,7 +65,46 @@ html, body, #root {
 
 /* Safe area for bottom nav */
 .pb-safe {
-  padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+}
+
+/* Fun gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #FF6B6B, #FFD93D);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Bounce animation */
+@keyframes bounce-soft {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.animate-bounce-soft {
+  animation: bounce-soft 2s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-6px) rotate(2deg); }
+  75% { transform: translateY(-3px) rotate(-1deg); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
 }
 
 /* Desktop: center the app with max-width */
@@ -65,15 +112,15 @@ html, body, #root {
   #root {
     max-width: 480px !important;
     margin: 0 auto !important;
-    box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
-    border-left: 1px solid #e5e7eb;
-    border-right: 1px solid #e5e7eb;
+    box-shadow: 0 0 80px rgba(255, 107, 107, 0.1), 0 0 20px rgba(0,0,0,0.05);
+    border-left: 1px solid #ffe8e0;
+    border-right: 1px solid #ffe8e0;
     position: relative;
     overflow: hidden;
   }
 
   body {
-    background-color: #e8e4dc !important;
+    background: linear-gradient(135deg, #fff0e0 0%, #ffe8e8 50%, #e8f0ff 100%) !important;
   }
 }
 
@@ -84,6 +131,6 @@ html, body, #root {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #ccc;
+  background: #ffc0c0;
   border-radius: 2px;
 }

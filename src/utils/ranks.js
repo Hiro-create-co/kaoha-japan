@@ -1,8 +1,8 @@
 export const RANKS = [
-  { key: 'beginner', minVisits: 0, icon: '🔰', color: '#95a5a6' },
-  { key: 'traveler', minVisits: 10, icon: '🧳', color: '#3498db' },
-  { key: 'master', minVisits: 25, icon: '🏯', color: '#f39c12' },
-  { key: 'legend', minVisits: 47, icon: '👑', color: '#e74c3c' },
+  { key: 'beginner', minVisits: 0, icon: '🔰', color: '#4ECDC4' },
+  { key: 'traveler', minVisits: 10, icon: '🧳', color: '#FFD93D' },
+  { key: 'master', minVisits: 25, icon: '🏯', color: '#FF6B6B' },
+  { key: 'legend', minVisits: 47, icon: '👑', color: '#a78bfa' },
 ]
 
 export function getRank(visitCount) {

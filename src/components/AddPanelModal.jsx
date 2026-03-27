@@ -67,7 +67,6 @@ export default function AddPanelModal({ isOpen, onClose, onSubmit, initialLat, i
   const handleSubmit = (e) => {
     e.preventDefault()
     if (!name.trim() || !lat || !lng) return
-
     const pref = PREFECTURES.find((p) => p.ja === prefecture)
     onSubmit({
       name: name.trim(),
@@ -80,15 +79,7 @@ export default function AddPanelModal({ isOpen, onClose, onSubmit, initialLat, i
       descriptionEn: description.trim() || '',
       image: imageData,
     })
-
-    // Reset
-    setName('')
-    setPrefecture('')
-    setDescription('')
-    setLat('')
-    setLng('')
-    setImageData(null)
-    setUseCurrentLocation(false)
+    setName(''); setPrefecture(''); setDescription(''); setLat(''); setLng(''); setImageData(null); setUseCurrentLocation(false)
     onClose()
   }
 
@@ -96,124 +87,62 @@ export default function AddPanelModal({ isOpen, onClose, onSubmit, initialLat, i
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center">
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
       <div className="relative bg-white w-full max-w-md max-h-[85vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl shadow-2xl">
-        {/* Header */}
-        <div className="sticky top-0 bg-white/95 backdrop-blur-sm border-b border-gray-100 px-5 py-4 flex items-center justify-between rounded-t-3xl">
-          <h2 className="text-lg font-extrabold">🎭 {t('addPanel.title')}</h2>
-          <button onClick={onClose} className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:bg-gray-200 transition">
+        <div className="sticky top-0 backdrop-blur-sm border-b px-5 py-4 flex items-center justify-between rounded-t-3xl" style={{ background: 'linear-gradient(135deg, #FFF8F0ee, #ffe8e0ee)', borderColor: '#ffe8e0' }}>
+          <h2 className="text-lg font-black flex items-center gap-1.5">🎭 {t('addPanel.title')}</h2>
+          <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center text-sm transition" style={{ background: '#FF6B6B20', color: '#FF6B6B' }}>
             ✕
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-5 space-y-4">
-          {/* Photo */}
           <div>
-            <label className="text-sm font-bold text-gray-600 mb-2 block">{t('addPanel.photo')}</label>
+            <label className="text-sm font-bold mb-2 block" style={{ color: 'var(--color-text-light)' }}>{t('addPanel.photo')}</label>
             <input ref={fileInputRef} type="file" accept="image/*" capture="environment" onChange={handleImageUpload} className="hidden" />
             {imageData ? (
               <div className="relative">
-                <img src={imageData} alt="" className="w-full h-48 object-cover rounded-2xl border-2 border-gray-200" />
-                <button
-                  type="button"
-                  onClick={() => setImageData(null)}
-                  className="absolute top-2 right-2 w-8 h-8 bg-black/50 text-white rounded-full flex items-center justify-center text-sm"
-                >
-                  ✕
-                </button>
+                <img src={imageData} alt="" className="w-full h-48 object-cover rounded-2xl" style={{ border: '2px solid #ffe8e0' }} />
+                <button type="button" onClick={() => setImageData(null)} className="absolute top-2 right-2 w-8 h-8 bg-black/50 text-white rounded-full flex items-center justify-center text-sm">✕</button>
               </div>
             ) : (
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                className="w-full h-36 border-2 border-dashed border-gray-300 rounded-2xl flex flex-col items-center justify-center gap-2 text-gray-400 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition"
-              >
+              <button type="button" onClick={() => fileInputRef.current?.click()} className="w-full h-36 border-2 border-dashed rounded-2xl flex flex-col items-center justify-center gap-2 transition hover:border-[var(--color-primary)]" style={{ borderColor: '#ffc0c0', color: 'var(--color-text-light)' }}>
                 <span className="text-3xl">📷</span>
                 <span className="text-sm font-bold">{t('addPanel.tapToPhoto')}</span>
               </button>
             )}
           </div>
 
-          {/* Name */}
           <div>
-            <label className="text-sm font-bold text-gray-600 mb-1.5 block">{t('addPanel.name')}</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder={t('addPanel.namePlaceholder')}
-              required
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none transition"
-            />
+            <label className="text-sm font-bold mb-1.5 block" style={{ color: 'var(--color-text-light)' }}>{t('addPanel.name')}</label>
+            <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder={t('addPanel.namePlaceholder')} required className="w-full px-4 py-3 border-2 rounded-xl text-sm focus:outline-none transition" style={{ borderColor: '#ffe8e0', background: '#FFF8F0' }} onFocus={(e) => e.target.style.borderColor = '#FF6B6B'} onBlur={(e) => e.target.style.borderColor = '#ffe8e0'} />
           </div>
 
-          {/* Prefecture */}
           <div>
-            <label className="text-sm font-bold text-gray-600 mb-1.5 block">{t('addPanel.prefecture')}</label>
-            <select
-              value={prefecture}
-              onChange={(e) => setPrefecture(e.target.value)}
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none transition bg-white"
-            >
+            <label className="text-sm font-bold mb-1.5 block" style={{ color: 'var(--color-text-light)' }}>{t('addPanel.prefecture')}</label>
+            <select value={prefecture} onChange={(e) => setPrefecture(e.target.value)} className="w-full px-4 py-3 border-2 rounded-xl text-sm focus:outline-none transition" style={{ borderColor: '#ffe8e0', background: '#FFF8F0' }}>
               <option value="">{t('addPanel.selectPrefecture')}</option>
-              {PREFECTURES.map((p) => (
-                <option key={p.ja} value={p.ja}>{isJa ? p.ja : p.en}</option>
-              ))}
+              {PREFECTURES.map((p) => (<option key={p.ja} value={p.ja}>{isJa ? p.ja : p.en}</option>))}
             </select>
           </div>
 
-          {/* Location */}
           <div>
-            <label className="text-sm font-bold text-gray-600 mb-1.5 block">{t('addPanel.location')}</label>
-            <button
-              type="button"
-              onClick={handleGetLocation}
-              disabled={locating}
-              className="w-full mb-2 py-2.5 bg-blue-50 text-blue-600 rounded-xl text-sm font-bold border border-blue-200 hover:bg-blue-100 transition disabled:opacity-50"
-            >
-              {locating ? '⏳ ...' : `● ${t('addPanel.useCurrentLocation')}`}
+            <label className="text-sm font-bold mb-1.5 block" style={{ color: 'var(--color-text-light)' }}>{t('addPanel.location')}</label>
+            <button type="button" onClick={handleGetLocation} disabled={locating} className="w-full mb-2 py-2.5 rounded-xl text-sm font-bold border transition disabled:opacity-50" style={{ background: 'linear-gradient(135deg, #4ECDC410, #6BCB7710)', color: '#4ECDC4', borderColor: '#4ECDC430' }}>
+              {locating ? '⏳ ...' : `📍 ${t('addPanel.useCurrentLocation')}`}
             </button>
             <div className="grid grid-cols-2 gap-2">
-              <input
-                type="number"
-                step="any"
-                value={lat}
-                onChange={(e) => setLat(e.target.value)}
-                placeholder={t('addPanel.lat')}
-                required
-                className="px-3 py-2.5 border-2 border-gray-200 rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none transition"
-              />
-              <input
-                type="number"
-                step="any"
-                value={lng}
-                onChange={(e) => setLng(e.target.value)}
-                placeholder={t('addPanel.lng')}
-                required
-                className="px-3 py-2.5 border-2 border-gray-200 rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none transition"
-              />
+              <input type="number" step="any" value={lat} onChange={(e) => setLat(e.target.value)} placeholder={t('addPanel.lat')} required className="px-3 py-2.5 border-2 rounded-xl text-sm focus:outline-none transition" style={{ borderColor: '#ffe8e0', background: '#FFF8F0' }} />
+              <input type="number" step="any" value={lng} onChange={(e) => setLng(e.target.value)} placeholder={t('addPanel.lng')} required className="px-3 py-2.5 border-2 rounded-xl text-sm focus:outline-none transition" style={{ borderColor: '#ffe8e0', background: '#FFF8F0' }} />
             </div>
           </div>
 
-          {/* Description */}
           <div>
-            <label className="text-sm font-bold text-gray-600 mb-1.5 block">{t('addPanel.description')}</label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder={t('addPanel.descriptionPlaceholder')}
-              rows={2}
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none transition resize-none"
-            />
+            <label className="text-sm font-bold mb-1.5 block" style={{ color: 'var(--color-text-light)' }}>{t('addPanel.description')}</label>
+            <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder={t('addPanel.descriptionPlaceholder')} rows={2} className="w-full px-4 py-3 border-2 rounded-xl text-sm focus:outline-none transition resize-none" style={{ borderColor: '#ffe8e0', background: '#FFF8F0' }} />
           </div>
 
-          {/* Submit */}
-          <button
-            type="submit"
-            disabled={!name.trim() || !lat || !lng}
-            className="w-full py-3.5 text-white rounded-2xl font-bold text-base transition-all hover:opacity-90 active:scale-[0.97] shadow-lg disabled:opacity-40 disabled:shadow-none"
-            style={{ background: 'linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))' }}
-          >
+          <button type="submit" disabled={!name.trim() || !lat || !lng} className="w-full py-3.5 text-white rounded-2xl font-black text-base transition-all hover:scale-[1.02] active:scale-[0.97] disabled:opacity-40 disabled:shadow-none" style={{ background: 'linear-gradient(135deg, #FF6B6B, #FFD93D)', boxShadow: '0 6px 25px rgba(255,107,107,0.3)' }}>
             🎭 {t('addPanel.submit')}
           </button>
         </form>

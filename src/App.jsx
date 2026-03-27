@@ -42,13 +42,14 @@ export default function App() {
 
   return (
     <div className="h-full flex flex-col">
-      <header className="flex items-center justify-between px-5 py-3 bg-white/95 backdrop-blur-sm border-b border-gray-200/60 sticky top-0 z-40 shadow-sm">
-        <h1 className="text-xl font-extrabold tracking-tight" style={{ color: 'var(--color-primary)' }}>
-          🎭 カオハJAPAN
+      <header className="flex items-center justify-between px-4 py-2.5 sticky top-0 z-40" style={{ background: 'linear-gradient(135deg, #FF6B6B, #ff8e8e, #FFD93D)' }}>
+        <h1 className="text-lg font-black tracking-tight text-white drop-shadow-sm flex items-center gap-1.5">
+          <span className="text-xl">🎭</span>
+          カオハJAPAN
         </h1>
         <button
           onClick={toggleLang}
-          className="text-xs font-bold px-4 py-1.5 rounded-full border-2 border-gray-300 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors bg-white"
+          className="text-[10px] font-black px-3 py-1 rounded-full bg-white/25 text-white border border-white/40 hover:bg-white/40 transition-all active:scale-95 backdrop-blur-sm"
         >
           {i18n.language === 'ja' ? 'EN' : 'JA'}
         </button>
