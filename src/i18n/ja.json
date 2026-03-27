@@ -38,7 +38,8 @@
       "master": "マスター",
       "legend": "伝説"
     },
-    "prefectures": "都道府県"
+    "prefectures": "都道府県",
+    "until": "まであと"
   },
   "contest": {
     "title": "フォトコンテスト",

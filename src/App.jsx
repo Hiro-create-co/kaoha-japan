@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Globe } from 'lucide-react'
 import BottomNav from './components/BottomNav'
 import MapPage from './pages/MapPage'
 import PointsPage from './pages/PointsPage'
@@ -41,16 +42,16 @@ export default function App() {
   }
 
   return (
-    <div className="h-full flex flex-col">
-      <header className="flex items-center justify-between px-4 py-2.5 sticky top-0 z-40" style={{ background: 'linear-gradient(135deg, #FF6B6B, #ff8e8e, #FFD93D)' }}>
-        <h1 className="text-lg font-black tracking-tight text-white drop-shadow-sm flex items-center gap-1.5">
-          <span className="text-xl">🎭</span>
+    <div className="h-full flex flex-col bg-[var(--color-bg)]">
+      <header className="flex items-center justify-between px-5 py-3 bg-white/80 backdrop-blur-xl border-b border-[var(--color-border)] sticky top-0 z-40">
+        <h1 className="text-[15px] font-bold tracking-tight text-[var(--color-text)]">
           カオハJAPAN
         </h1>
         <button
           onClick={toggleLang}
-          className="text-[10px] font-black px-3 py-1 rounded-full bg-white/25 text-white border border-white/40 hover:bg-white/40 transition-all active:scale-95 backdrop-blur-sm"
+          className="flex items-center gap-1.5 text-xs font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors px-2.5 py-1.5 rounded-lg hover:bg-[var(--color-border)]"
         >
+          <Globe size={14} />
           {i18n.language === 'ja' ? 'EN' : 'JA'}
         </button>
       </header>

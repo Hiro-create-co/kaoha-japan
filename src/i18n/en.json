@@ -38,7 +38,8 @@
       "master": "Master",
       "legend": "Legend"
     },
-    "prefectures": "Prefectures"
+    "prefectures": "Prefectures",
+    "until": "more to"
   },
   "contest": {
     "title": "Photo Contest",

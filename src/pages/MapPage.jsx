@@ -1,8 +1,11 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { MapContainer, TileLayer, Marker, Popup, useMap, Circle } from 'react-leaflet'
-import MarkerClusterGroup from 'react-leaflet-cluster'
 import L from 'leaflet'
+import 'leaflet.markercluster'
+import 'leaflet.markercluster/dist/MarkerCluster.css'
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
+import { Navigation, Plus, Search, MapPin, Check, X } from 'lucide-react'
 import { useGeolocation } from '../hooks/useGeolocation'
 import AddPanelModal from '../components/AddPanelModal'
 
@@ -13,43 +16,30 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 })
 
-const makeIcon = (emoji, size = 30) => new L.DivIcon({
+const makeDotIcon = (color, size = 12) => new L.DivIcon({
   className: '',
-  html: `<div style="font-size:${size}px;text-align:center;line-height:1;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.2))">${emoji}</div>`,
-  iconSize: [size + 4, size + 4],
-  iconAnchor: [(size + 4) / 2, (size + 4) / 2],
+  html: `<div style="width:${size}px;height:${size}px;background:${color};border-radius:50%;border:2.5px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.2)"></div>`,
+  iconSize: [size, size],
+  iconAnchor: [size / 2, size / 2],
 })
 
-const visitedIcon = makeIcon('✅')
-const unvisitedIcon = makeIcon('🎭')
-const userPanelIcon = makeIcon('📌')
-const userVisitedIcon = makeIcon('🏅')
+const visitedIcon = makeDotIcon('#7C9A82', 14)
+const unvisitedIcon = makeDotIcon('#F4845F', 12)
+const userPanelIcon = makeDotIcon('#8B5CF6', 12)
+const userVisitedIcon = makeDotIcon('#7C9A82', 14)
 
 const myLocationIcon = new L.DivIcon({
   className: '',
-  html: '<div style="width:16px;height:16px;background:linear-gradient(135deg,#4ECDC4,#6BCB77);border:3px solid white;border-radius:50%;box-shadow:0 0 0 2px #4ECDC4,0 2px 8px rgba(0,0,0,0.3)"></div>',
-  iconSize: [16, 16],
-  iconAnchor: [8, 8],
+  html: '<div style="width:14px;height:14px;background:#3B82F6;border:2.5px solid white;border-radius:50%;box-shadow:0 0 0 2px rgba(59,130,246,0.3),0 1px 4px rgba(0,0,0,0.2)"></div>',
+  iconSize: [14, 14],
+  iconAnchor: [7, 7],
 })
 
 const createClusterIcon = (cluster) => {
   const count = cluster.getChildCount()
-  let bg, border, size
-  if (count >= 20) {
-    bg = 'linear-gradient(135deg, #FF6B6B, #ee5a5a)'
-    border = '#FF6B6B'
-    size = 50
-  } else if (count >= 10) {
-    bg = 'linear-gradient(135deg, #FFD93D, #f0c830)'
-    border = '#FFD93D'
-    size = 44
-  } else {
-    bg = 'linear-gradient(135deg, #4ECDC4, #6BCB77)'
-    border = '#4ECDC4'
-    size = 38
-  }
+  const size = count >= 20 ? 44 : count >= 10 ? 38 : 32
   return L.divIcon({
-    html: `<div style="background:${bg};color:white;width:${size}px;height:${size}px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:${size > 44 ? 16 : 14}px;box-shadow:0 4px 15px ${border}40,0 2px 6px rgba(0,0,0,0.15);border:3px solid white;font-family:'Nunito',sans-serif">${count}</div>`,
+    html: `<div style="background:white;color:#1a1a1a;width:${size}px;height:${size}px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:${size > 38 ? 14 : 12}px;box-shadow:0 2px 8px rgba(0,0,0,0.12),0 0 0 1px rgba(0,0,0,0.06);font-family:'Inter','Noto Sans JP',system-ui,sans-serif">${count}</div>`,
     className: '',
     iconSize: [size, size],
     iconAnchor: [size / 2, size / 2],
@@ -72,6 +62,76 @@ function FlyToLocation({ position }) {
   useEffect(() => {
     if (position) map.flyTo([position.lat, position.lng], 12, { duration: 1.5 })
   }, [position, map])
+  return null
+}
+
+function MarkerClusterLayer({ panels, getIcon, isVisited, isJa, addVisit, t }) {
+  const map = useMap()
+  const clusterRef = useRef(null)
+
+  useEffect(() => {
+    if (!map) return
+
+    if (clusterRef.current) {
+      map.removeLayer(clusterRef.current)
+    }
+
+    const cluster = L.markerClusterGroup({
+      chunkedLoading: true,
+      maxClusterRadius: 50,
+      spiderfyOnMaxZoom: true,
+      showCoverageOnHover: false,
+      iconCreateFunction: createClusterIcon,
+    })
+
+    panels.forEach((panel) => {
+      const visited = isVisited(panel.id)
+      const isUser = panel.source === 'user'
+      const marker = L.marker([panel.lat, panel.lng], { icon: getIcon(panel, visited) })
+
+      const popupHtml = `
+        <div style="min-width:220px;max-width:260px;font-family:inherit">
+          ${panel.image ? `<img src="${panel.image}" style="width:100%;height:144px;object-fit:cover;border-radius:12px;margin-bottom:12px" />` : ''}
+          <h3 style="font-weight:700;font-size:15px;margin-bottom:4px;line-height:1.3;color:var(--color-text)">
+            ${isJa ? panel.name : (panel.nameEn || panel.name)}
+          </h3>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <span style="font-size:12px;color:var(--color-text-secondary)">📍 ${isJa ? panel.prefecture : (panel.prefectureEn || panel.prefecture)}</span>
+            ${isUser
+              ? `<span style="font-size:10px;padding:2px 6px;background:#f5f3ff;color:#8b5cf6;border-radius:4px;font-weight:500">${t('map.userSubmitted')}</span>`
+              : `<span style="font-size:10px;padding:2px 6px;background:#fffbeb;color:#f59e0b;border-radius:4px;font-weight:500">${t('map.unverified')}</span>`
+            }
+          </div>
+          ${panel.description ? `<p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:12px;line-height:1.6">${isJa ? panel.description : (panel.descriptionEn || panel.description)}</p>` : ''}
+          <p style="font-size:12px;font-weight:600;color:var(--color-primary);margin-bottom:12px">+${panel.points} pt</p>
+          ${visited
+            ? `<div style="text-align:center;font-size:14px;padding:8px 16px;background:var(--color-sage-light);color:var(--color-sage);border-radius:12px;font-weight:600">${t('map.alreadyVisited')}</div>`
+            : `<button data-visit-panel="${panel.id}" style="width:100%;font-size:14px;padding:8px 16px;background:var(--color-primary);color:white;border:none;border-radius:12px;font-weight:600;cursor:pointer">${t('map.visit')}</button>`
+          }
+        </div>
+      `
+      marker.bindPopup(popupHtml)
+      cluster.addLayer(marker)
+    })
+
+    map.addLayer(cluster)
+    clusterRef.current = cluster
+
+    const handleClick = (e) => {
+      const panelId = e.target?.dataset?.visitPanel
+      if (panelId) addVisit(panelId)
+    }
+    map.getContainer().addEventListener('click', handleClick)
+
+    return () => {
+      map.getContainer().removeEventListener('click', handleClick)
+      if (clusterRef.current) {
+        map.removeLayer(clusterRef.current)
+        clusterRef.current = null
+      }
+    }
+  }, [map, panels, isJa, t])
+
   return null
 }
 
@@ -111,61 +171,59 @@ export default function MapPage({ visits, addVisit, userPanels, addUserPanel }) 
 
   return (
     <div className="h-full flex flex-col relative">
-      {/* Top floating controls */}
+      {/* Top bar */}
       <div className="absolute top-3 left-3 right-3 z-[1000] flex items-center justify-between gap-2">
-        <div className="flex gap-1.5">
-          <div className="rounded-full px-3 py-1.5 shadow-lg flex items-center gap-1.5" style={{ background: 'linear-gradient(135deg, #FF6B6B, #ff8e8e)', boxShadow: '0 4px 15px rgba(255,107,107,0.3)' }}>
-            <span className="text-xs">🎭</span>
-            <span className="text-xs font-black text-white">{totalCount}</span>
-          </div>
-          <div className="rounded-full px-3 py-1.5 shadow-lg flex items-center gap-1.5" style={{ background: 'linear-gradient(135deg, #6BCB77, #4ECDC4)', boxShadow: '0 4px 15px rgba(107,203,119,0.3)' }}>
-            <span className="text-xs">✅</span>
-            <span className="text-xs font-black text-white">{visitedCount}</span>
+        <div className="flex items-center gap-2">
+          <div className="bg-white/90 backdrop-blur-md rounded-full px-3.5 py-2 shadow-sm border border-black/[0.04] flex items-center gap-3">
+            <span className="text-xs font-semibold text-[var(--color-text)]">{totalCount} <span className="text-[var(--color-text-tertiary)] font-normal">{t('map.panels')}</span></span>
+            <span className="w-px h-3 bg-[var(--color-border-strong)]"></span>
+            <span className="text-xs font-semibold text-[var(--color-sage)]">{visitedCount} <span className="text-[var(--color-text-tertiary)] font-normal">{t('map.visited')}</span></span>
           </div>
           <button
             onClick={() => setShowFilter(!showFilter)}
-            className="rounded-full px-3 py-1.5 shadow-lg text-xs font-bold transition-all active:scale-95"
-            style={{
-              background: selectedPrefecture ? 'linear-gradient(135deg, #FFD93D, #f0c830)' : 'white',
-              color: selectedPrefecture ? 'white' : '#9a8585',
-              boxShadow: selectedPrefecture ? '0 4px 15px rgba(255,217,61,0.3)' : '0 4px 15px rgba(0,0,0,0.08)',
-            }}
+            className={`bg-white/90 backdrop-blur-md rounded-full p-2 shadow-sm border transition-all active:scale-95 ${
+              selectedPrefecture ? 'border-[var(--color-primary)] text-[var(--color-primary)]' : 'border-black/[0.04] text-[var(--color-text-secondary)]'
+            }`}
           >
-            🔍 {selectedPrefecture || t('map.filter')}
+            <Search size={16} />
           </button>
         </div>
         <button
           onClick={() => getCurrentPosition()}
           disabled={loading}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg transition-all disabled:opacity-50 active:scale-95 shrink-0 text-white"
-          style={{ background: 'linear-gradient(135deg, #4ECDC4, #6BCB77)', boxShadow: '0 4px 15px rgba(78,205,196,0.3)' }}
+          className="bg-white/90 backdrop-blur-md rounded-full p-2 shadow-sm border border-black/[0.04] text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-all active:scale-95 disabled:opacity-50"
         >
-          {loading ? <span className="animate-spin">⏳</span> : <span>📍</span>}
-          {t('map.myLocation')}
+          <Navigation size={16} className={loading ? 'animate-pulse' : ''} />
         </button>
       </div>
 
-      {/* Prefecture filter dropdown */}
+      {/* Filter dropdown */}
       {showFilter && (
-        <div className="absolute top-14 left-3 right-3 z-[1000] rounded-2xl shadow-2xl border border-[#ffe8e0] p-3 max-h-64 overflow-y-auto" style={{ background: 'rgba(255,248,240,0.98)', backdropFilter: 'blur(20px)' }}>
+        <div className="absolute top-14 left-3 right-3 z-[1000] bg-white/95 backdrop-blur-xl rounded-2xl shadow-lg border border-[var(--color-border)] p-2 max-h-72 overflow-y-auto">
+          {selectedPrefecture && (
+            <div className="flex items-center justify-between px-3 py-2 mb-1">
+              <span className="text-xs font-semibold text-[var(--color-primary)]">{selectedPrefecture}</span>
+              <button onClick={() => { setSelectedPrefecture(''); setShowFilter(false) }} className="text-[var(--color-text-tertiary)] hover:text-[var(--color-text)]">
+                <X size={14} />
+              </button>
+            </div>
+          )}
           <button
             onClick={() => { setSelectedPrefecture(''); setShowFilter(false) }}
-            className={`w-full text-left px-3 py-2 rounded-xl text-sm font-bold transition ${
-              !selectedPrefecture ? 'text-[var(--color-primary)]' : 'hover:bg-white/50 text-[var(--color-text-light)]'
+            className={`w-full text-left px-3 py-2 rounded-lg text-sm transition ${
+              !selectedPrefecture ? 'bg-[var(--color-primary-light)] text-[var(--color-primary)] font-semibold' : 'hover:bg-[var(--color-bg)] text-[var(--color-text-secondary)]'
             }`}
-            style={!selectedPrefecture ? { background: 'linear-gradient(135deg, #FF6B6B10, #FFD93D10)' } : {}}
           >
             {t('map.allPrefectures')}
           </button>
-          <div className="grid grid-cols-3 gap-1 mt-1">
+          <div className="grid grid-cols-3 gap-0.5 mt-1">
             {PREFECTURES_FILTER.map((pref) => (
               <button
                 key={pref}
                 onClick={() => { setSelectedPrefecture(pref); setShowFilter(false) }}
-                className={`text-left px-2 py-1.5 rounded-lg text-xs font-medium transition truncate ${
-                  selectedPrefecture === pref ? 'font-bold text-white' : 'hover:bg-white/60 text-[var(--color-text-light)]'
+                className={`text-left px-2.5 py-2 rounded-lg text-xs transition truncate ${
+                  selectedPrefecture === pref ? 'bg-[var(--color-primary-light)] text-[var(--color-primary)] font-semibold' : 'hover:bg-[var(--color-bg)] text-[var(--color-text-secondary)]'
                 }`}
-                style={selectedPrefecture === pref ? { background: 'linear-gradient(135deg, #FF6B6B, #ff8e8e)' } : {}}
               >
                 {pref}
               </button>
@@ -174,13 +232,14 @@ export default function MapPage({ visits, addVisit, userPanels, addUserPanel }) 
         </div>
       )}
 
-      {/* Found Panel button */}
+      {/* Add panel FAB */}
       <button
         onClick={() => setShowAddModal(true)}
-        className="absolute bottom-12 right-4 z-[1000] flex items-center gap-2 px-5 py-3 text-white rounded-full font-black text-sm shadow-xl transition-all hover:scale-105 active:scale-95 animate-bounce-soft"
-        style={{ background: 'linear-gradient(135deg, #FF6B6B, #FFD93D)', boxShadow: '0 6px 25px rgba(255,107,107,0.4)' }}
+        className="absolute bottom-14 right-4 z-[1000] flex items-center gap-2 px-4 py-2.5 bg-[var(--color-primary)] text-white rounded-full font-semibold text-sm shadow-lg transition-all hover:shadow-xl active:scale-95"
+        style={{ boxShadow: '0 4px 20px rgba(244,132,95,0.35)' }}
       >
-        📌 {t('map.addPanel')}
+        <Plus size={16} strokeWidth={2.5} />
+        {t('map.addPanel')}
       </button>
 
       {/* Map */}
@@ -196,70 +255,10 @@ export default function MapPage({ visits, addVisit, userPanels, addUserPanel }) 
               <Marker position={[position.lat, position.lng]} icon={myLocationIcon}>
                 <Popup>{t('map.myLocation')}</Popup>
               </Marker>
-              <Circle
-                center={[position.lat, position.lng]}
-                radius={500}
-                pathOptions={{ color: '#4ECDC4', fillColor: '#4ECDC4', fillOpacity: 0.1, weight: 2 }}
-              />
+              <Circle center={[position.lat, position.lng]} radius={500} pathOptions={{ color: '#3B82F6', fillColor: '#3B82F6', fillOpacity: 0.08, weight: 1.5 }} />
             </>
           )}
-          <MarkerClusterGroup chunkedLoading iconCreateFunction={createClusterIcon} maxClusterRadius={50} spiderfyOnMaxZoom showCoverageOnHover={false}>
-            {filteredPanels.map((panel) => {
-              const visited = isVisited(panel.id)
-              const isUser = panel.source === 'user'
-              return (
-                <Marker key={panel.id} position={[panel.lat, panel.lng]} icon={getIcon(panel, visited)}>
-                  <Popup>
-                    <div className="min-w-[200px] max-w-[260px]">
-                      {panel.image && (
-                        <img src={panel.image} alt={panel.name} className="w-full h-32 object-cover rounded-2xl mb-3" style={{ border: '2px solid #ffe8e0' }} />
-                      )}
-                      <h3 className="font-black text-base mb-1 leading-tight" style={{ color: 'var(--color-text)' }}>
-                        {isJa ? panel.name : (panel.nameEn || panel.name)}
-                      </h3>
-                      <div className="flex items-center gap-1.5 mb-2 flex-wrap">
-                        <span className="text-xs flex items-center gap-1" style={{ color: 'var(--color-text-light)' }}>
-                          📍 {isJa ? panel.prefecture : (panel.prefectureEn || panel.prefecture)}
-                        </span>
-                        {isUser ? (
-                          <span className="text-[10px] px-2 py-0.5 rounded-full font-bold text-white" style={{ background: 'linear-gradient(135deg, #a78bfa, #818cf8)' }}>
-                            {t('map.userSubmitted')}
-                          </span>
-                        ) : (
-                          <span className="text-[10px] px-2 py-0.5 rounded-full font-bold" style={{ background: '#FFF0E0', color: '#e0a050' }}>
-                            {t('map.unverified')}
-                          </span>
-                        )}
-                      </div>
-                      {panel.description && (
-                        <p className="text-xs mb-3 leading-relaxed" style={{ color: 'var(--color-text-light)' }}>
-                          {isJa ? panel.description : (panel.descriptionEn || panel.description)}
-                        </p>
-                      )}
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="text-sm font-black" style={{ color: 'var(--color-secondary-dark)' }}>
-                          🎯 +{panel.points} pt
-                        </span>
-                      </div>
-                      {visited ? (
-                        <div className="text-center text-sm px-4 py-2.5 rounded-xl font-bold" style={{ background: 'linear-gradient(135deg, #6BCB7715, #4ECDC415)', color: '#6BCB77', border: '1.5px solid #6BCB7730' }}>
-                          ✅ {t('map.alreadyVisited')}
-                        </div>
-                      ) : (
-                        <button
-                          onClick={() => addVisit(panel.id)}
-                          className="w-full text-sm px-4 py-2.5 text-white rounded-xl font-black transition-all hover:opacity-90 active:scale-[0.97]"
-                          style={{ background: 'linear-gradient(135deg, #FF6B6B, #FFD93D)', boxShadow: '0 4px 15px rgba(255,107,107,0.3)' }}
-                        >
-                          🎭 {t('map.visit')}
-                        </button>
-                      )}
-                    </div>
-                  </Popup>
-                </Marker>
-              )
-            })}
-          </MarkerClusterGroup>
+          <MarkerClusterLayer panels={filteredPanels} getIcon={getIcon} isVisited={isVisited} isJa={isJa} addVisit={addVisit} t={t} />
         </MapContainer>
       </div>
 

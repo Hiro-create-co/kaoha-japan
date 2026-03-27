@@ -1,21 +1,18 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&family=Nunito:wght@400;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --color-primary: #FF6B6B;
-  --color-primary-dark: #ee5a5a;
-  --color-primary-light: #ff9a9a;
-  --color-secondary: #FFD93D;
-  --color-secondary-dark: #f0c830;
-  --color-accent: #6BCB77;
-  --color-accent-dark: #5ab868;
-  --color-teal: #4ECDC4;
-  --color-purple: #a78bfa;
-  --color-bg: #FFF8F0;
-  --color-bg-warm: #FFF0E0;
-  --color-card: #ffffff;
-  --color-text: #3d2c2c;
-  --color-text-light: #9a8585;
+  --color-primary: #F4845F;
+  --color-primary-light: #fef0ec;
+  --color-sage: #7C9A82;
+  --color-sage-light: #f0f5f1;
+  --color-bg: #FAFAF8;
+  --color-surface: #ffffff;
+  --color-text: #1a1a1a;
+  --color-text-secondary: #6b7280;
+  --color-text-tertiary: #9ca3af;
+  --color-border: #f0eeeb;
+  --color-border-strong: #e5e2dd;
 }
 
 * {
@@ -27,10 +24,11 @@
 html, body, #root {
   height: 100%;
   width: 100%;
-  font-family: 'Zen Maru Gothic', 'Nunito', 'Hiragino Sans', sans-serif;
+  font-family: 'Noto Sans JP', 'Inter', system-ui, sans-serif;
   background-color: var(--color-bg);
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
 }
 
 /* Leaflet */
@@ -41,96 +39,44 @@ html, body, #root {
 }
 
 .leaflet-popup-content-wrapper {
-  border-radius: 20px !important;
-  box-shadow: 0 10px 40px rgba(255, 107, 107, 0.15), 0 4px 12px rgba(0,0,0,0.08) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04) !important;
   padding: 0 !important;
-  border: 2px solid #fff0e0 !important;
 }
 
 .leaflet-popup-content {
-  margin: 16px 18px !important;
+  margin: 16px !important;
   font-family: inherit !important;
   line-height: 1.6 !important;
 }
 
 .leaflet-popup-tip {
-  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.1) !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
 }
 
-/* Marker cluster animation */
 .marker-cluster-anim .leaflet-marker-icon,
 .marker-cluster-anim .leaflet-marker-shadow {
   transition: transform 0.3s ease-out, opacity 0.3s ease-in;
 }
 
-/* Safe area for bottom nav */
 .pb-safe {
-  padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
 }
 
-/* Fun gradient text */
-.gradient-text {
-  background: linear-gradient(135deg, #FF6B6B, #FFD93D);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Bounce animation */
-@keyframes bounce-soft {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
-}
-
-.animate-bounce-soft {
-  animation: bounce-soft 2s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  25% { transform: translateY(-6px) rotate(2deg); }
-  75% { transform: translateY(-3px) rotate(-1deg); }
-}
-
-.animate-float {
-  animation: float 3s ease-in-out infinite;
-}
-
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-.shimmer {
-  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
-  background-size: 200% 100%;
-  animation: shimmer 2s ease-in-out infinite;
-}
-
-/* Desktop: center the app with max-width */
 @media (min-width: 768px) {
   #root {
-    max-width: 480px !important;
+    max-width: 430px !important;
     margin: 0 auto !important;
-    box-shadow: 0 0 80px rgba(255, 107, 107, 0.1), 0 0 20px rgba(0,0,0,0.05);
-    border-left: 1px solid #ffe8e0;
-    border-right: 1px solid #ffe8e0;
+    box-shadow: 0 0 0 1px var(--color-border), 0 4px 40px rgba(0,0,0,0.06);
     position: relative;
     overflow: hidden;
   }
 
   body {
-    background: linear-gradient(135deg, #fff0e0 0%, #ffe8e8 50%, #e8f0ff 100%) !important;
+    background: #f0eeeb !important;
   }
 }
 
 ::-webkit-scrollbar {
-  width: 4px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: #ffc0c0;
-  border-radius: 2px;
+  width: 0px;
 }
