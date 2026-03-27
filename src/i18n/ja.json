@@ -18,7 +18,9 @@
     "panels": "件のパネル",
     "addPanel": "パネルを発見！",
     "userSubmitted": "ユーザー投稿",
-    "unverified": "未確認"
+    "unverified": "未確認",
+    "filter": "絞り込み",
+    "allPrefectures": "すべての都道府県"
   },
   "points": {
     "title": "ご当地ポイント",
@@ -28,6 +30,8 @@
     "progress": "制覇率",
     "visitHistory": "訪問履歴",
     "noVisits": "まだパネルを訪問していません。マップから訪問しましょう！",
+    "allComplete": "全パネル制覇！",
+    "localNotice": "データはこのブラウザに保存されています。別の端末やブラウザでは引き継がれません。",
     "ranks": {
       "beginner": "初心者",
       "traveler": "旅人",
@@ -41,11 +45,13 @@
     "upload": "写真をアップロード",
     "share": "シェア",
     "gallery": "ギャラリー",
-    "noPhotos": "まだ写真がありません。顔ハメ写真をアップロードしよう！",
+    "noPhotos": "まだ写真がありません",
+    "noPhotosHint": "顔ハメパネルで撮った写真をアップロードしてみよう！",
     "shareTwitter": "Xでシェア",
     "shareLine": "LINEでシェア",
     "delete": "削除",
-    "uploadHint": "顔ハメパネルで撮った写真を選んでね"
+    "uploadHint": "顔ハメパネルで撮った写真を選んでね",
+    "localNotice": "写真はこのブラウザにのみ保存されます。他のユーザーには表示されません。ログイン機能は今後追加予定です。"
   },
   "addPanel": {
     "title": "新しいパネルを登録",

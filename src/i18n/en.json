@@ -18,7 +18,9 @@
     "panels": "panels",
     "addPanel": "Found a Panel!",
     "userSubmitted": "User Submitted",
-    "unverified": "Unverified"
+    "unverified": "Unverified",
+    "filter": "Filter",
+    "allPrefectures": "All Prefectures"
   },
   "points": {
     "title": "Local Points",
@@ -28,6 +30,8 @@
     "progress": "Progress",
     "visitHistory": "Visit History",
     "noVisits": "No panels visited yet. Go explore the map!",
+    "allComplete": "All panels conquered!",
+    "localNotice": "Data is saved in this browser only. It won't carry over to other devices or browsers.",
     "ranks": {
       "beginner": "Beginner",
       "traveler": "Traveler",
@@ -41,11 +45,13 @@
     "upload": "Upload Photo",
     "share": "Share",
     "gallery": "Gallery",
-    "noPhotos": "No photos yet. Upload your face cutout photos!",
+    "noPhotos": "No photos yet",
+    "noPhotosHint": "Upload photos taken at face cutout panels!",
     "shareTwitter": "Share on X",
     "shareLine": "Share on LINE",
     "delete": "Delete",
-    "uploadHint": "Select a photo taken at a face cutout panel"
+    "uploadHint": "Select a photo taken at a face cutout panel",
+    "localNotice": "Photos are saved in this browser only. They are not visible to other users. Login feature coming soon."
   },
   "addPanel": {
     "title": "Register New Panel",
